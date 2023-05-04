@@ -1,0 +1,49 @@
+name: Build and deploy GO app to Azure Web App
+
+on: workflow_dispatch 
+  
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.19
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -v ./...
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-artifact
+        path: '/published/**'
+#   deploy:
+#     permissions:
+#       contents: none
+#     runs-on: ubuntu-latest
+#     needs: build
+#     #environment:
+#       #name: 'Development'
+#       #url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+#     steps:
+#       #- name: Download artifact from build job
+#         #uses: actions/download-artifact@v3
+#         #with:
+#           #name: my-artifact
+
+#       - name: 'Deploy to Azure Web App'
+#         id: deploy-to-webapp
+#         uses: azure/webapps-deploy@v2
+#         with:
+#           app-name: gotbgithub
+#           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+#           #package: .
